@@ -1,7 +1,7 @@
 #Noeud dans l'arbre de jeu
 
 class Node:
-    #TODO
+
     def __init__(self, entier, parent = None):
         # à faire le winrate
         self.parent = parent
@@ -9,17 +9,9 @@ class Node:
         self.entier = entier
         self.children = []
 
-    #TODO
-    def sample(self,n):
-        """
-        à partir de la configuration à ce noeud, effectuer n simulations de coups aléatoires jusqu'à la fin de partie et garder les statistiques du nombre de parties gagnées par x et gagnées par o (les autres étant nulles)
-        :param n:
-        :return:
-        """
-
     def updateWinCount(self, winner, player):
         """
-        Mets a jour le winrate
+        Mets a jour le nombre de victoire du joueur
         :param winner: le gagnant de la simulation
         :param player: est '01' si le joueur est 'x', sinon '10' pour un joueur 'o'
         :return:
@@ -35,4 +27,8 @@ class Node:
         return len(self.children) == 0
 
     def addChild(self,entier):
+        """
+        Ajoute un enfant au noeud self
+        :param entier: entier qu'on veut stocker dans un enfant
+        """
         self.children.append(Node(entier,self))

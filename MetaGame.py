@@ -143,19 +143,24 @@ class MetaGame:
         :param move: numero de la case ou le mouvement est fait
         :return: retourne la representation entiere de l'etat de la partie apres que le joueur actuel ait joué à la position move
         """
+
         configBinAvecLast = bin(self.entier)[2:] #configuration en binaire
 
         #Si depart de la partie, mettre la configuration en 169 bits
         if self.entier == 0:
             configBinAvecLast = '0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
 
+        #pad pour le manque de 0 vu que si last = '0000000' et joueur est X = '01', on perd les 8 bits premiers bits de '0'
+        if len(configBinAvecLast) < 162:
+            configBinAvecLast = '0' + configBinAvecLast
+
         configBin = configBinAvecLast[7 + (len(configBinAvecLast) - 169):] #enleve les bits donnant la dernier case jouer
 
         #modifie la case ou le joueur met sa marque
         newConfigBin = configBin[:move*2] + self.player + configBin[move*2 + 2:]
         last = bin(move)[2:]
-        while len(last) < 7:        #construit le 7 bits de la derniere case jouer
-            last = '0' + last
+        # while len(last) < 7:        #construit le 7 bits de la derniere case jouer
+        #     last = '0' + last
         newConfigBin = last + newConfigBin #ajouter les 7 bits donnant la case où le dernier mouvement a été fait
         return int(newConfigBin, 2)
 
@@ -188,11 +193,13 @@ class MetaGame:
             count = 0 # compte le nombre de fois quon fait une simulation
 
             # Faire les simulations
-            while(n != count):
+            while(n > count):
                 simulation = MetaGame(child.entier)
+
                 while(simulation.winner() == 'enCours'): #complete la partie
                     nextMoves = simulation.possibleMoves()  #les moves permis parmis lequel on va choisir
                     simulation = MetaGame(simulation.getInt(nextMoves[randint(0,len(nextMoves)-1)]))  #fait un move au hasard
+
                 count += 1 #une simulation de plus de completer
                 child.updateWinCount(simulation.winner(), self.player)  #mets a jour le nombre fois que le joueur a gagner avec ce mouvement
             #/Fin de la simulation pour ce noeud
